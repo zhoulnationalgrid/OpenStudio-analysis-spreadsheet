@@ -72,26 +72,32 @@ Or run `rake clean`".red
     puts "Starting cluster...".cyan
     
     # Don't use the old API (Version 1)
-    aws_options = {
+    prox={username: 'nmpc\zhoul',  password:'4545ABxy%%'  ,  host: '192.168.85.13'    ,port:8080  }
+	aws_options = {
         ami_lookup_version: 2,
-        openstudio_server_version: excel.settings['openstudio_server_version']
+        openstudio_server_version: excel.settings['openstudio_server_version'],
+		proxy:prox
     }
+	
     aws = OpenStudio::Aws::Aws.new(aws_options)
-    
+
+	pemkeyfile='H:\AWS\usergroup\admin\pem\NREL-EE.pem'
     server_options = {
         instance_type: excel.settings["server_instance_type"],
-        user_id: excel.settings["user_id"]
-        # aws_key_pair_name: 'custom_key',
-        # private_key_file_name: File.expand_path('~/.ssh/private_key')
+        user_id: excel.settings["user_id"],
+		
+         aws_key_pair_name: 'NREL-EE',
+         private_key_file_name: pemkeyfile #File.expand_path('~/.ssh/private_key')
         # optional -- will default later
         # ebs_volume_id: nil,
     }
 
     worker_options = {
         instance_type: excel.settings["worker_instance_type"],
-        user_id: excel.settings["user_id"]
-        # aws_key_pair_name: 'custom_key',
-        # private_key_file_name: File.expand_path('~/.ssh/private_key')
+        user_id: excel.settings["user_id"],
+		
+         aws_key_pair_name: 'NREL-EE',
+         private_key_file_name: pemkeyfile #File.expand_path('~/.ssh/private_key')
     }
 
     # Create the server & worker
@@ -335,7 +341,7 @@ end
 desc "setup problem, start cluster, and run analysis (will submit another job if cluster is already running)"
 task :run do
   excel = get_project
-  excel.save_analysis
+  #excel.save_analysis
   create_cluster(excel)
   run_analysis(excel, "aws")
 end
